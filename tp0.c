@@ -5,6 +5,8 @@
 #define CURRENT_VERSION "0.1"
 #define VERSION_OPTION_ONE "-v"
 #define VERSION_OPTION_TWO "--version"
+#define HELP_OPTION_ONE "-h"
+#define HELP_OPTION_TWO "--help"
 
 int main (int argc, char *argv[]) {
 	
