@@ -9,7 +9,7 @@
 #define HELP_OPTION_TWO "--help"
 
 int main (int argc, char *argv[]) {
-	
+
 	//Primera idea
 	//Que sólo funcione con alguna de las siguientes formas
 	// ./tp0 -h ó ./tp0 --help para que se le muestre algún tipo de ayuda
@@ -17,25 +17,30 @@ int main (int argc, char *argv[]) {
 	// ./tp0 file para que se le diga donde está ese archivo *.txt para que revise los numeritos que tenga adentro y haga su magia
 
 	//Como sólo le vamos a dejar eso, si argc es distinto de cero ya decimos que está mal y le mostramos como usarlo
-
-	if (argc == ARGUMENTS_NEEDED){
-
-		//esto es para que el usuario escriba como quiera escribir con los cases
-		char *loweredOption = argv[ARGUMENTS_NEEDED - 1];
-		int i = 0;	//Porque si no lo declaro antes, el compilador se vuelve loco
-		for(i = 0; loweredOption[i]; i++){
-			loweredOption[i] = tolower(loweredOption[i]);
-		}
-
-
-		if (!strcmp(loweredOption,VERSION_OPTION_ONE) || !strcmp(loweredOption,VERSION_OPTION_TWO)){
+	if (argc > 1){
+		if (!strcmp(argv[1],VERSION_OPTION_ONE) || !strcmp(argv[1],VERSION_OPTION_TWO)){
 			printf ("Versión "CURRENT_VERSION"\n");
+			return 0;
 		}
-		
 	}
-	else {
-		printf("\nPara utilizar correctamente el comando, indique como primer argumento un archivo de texto.\n");
-	}
+	else{
+		//Una vez que se llego acá empiezo a ver las matrices que me vienen del cat con el siguiente formato:
+		//2x3 2 3 4 5 6.1 
+		//Me van a venir de a pares, así que tendré que verificar
+
+	//Sacado de: http://stackoverflow.com/questions/16163154/read-from-pipe-line-by-line-in-c
+		char buf[BUFSIZ];
+	    
+	    while ( fgets(buf, sizeof buf, stdin) != NULL){
+			printf("%s",buf);
+	    }
+	    if (buf[strlen(buf)-1] == '\n') {
+	        // read full line
+	        
+	    } else {
+	        // line was truncated
+	    }
+	}	
 
 	return 0;
 }
