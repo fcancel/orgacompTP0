@@ -8,6 +8,9 @@
 #define HELP_OPTION_ONE "-h"
 #define HELP_OPTION_TWO "--help"
 
+//Llamar al programa de la forma:
+// cat algun.txt | tp0
+
 int main (int argc, char *argv[]) {
 
 	//Primera idea
@@ -32,13 +35,27 @@ int main (int argc, char *argv[]) {
 	//Sacado de: http://stackoverflow.com/questions/16163154/read-from-pipe-line-by-line-in-c
 		char buf[BUFSIZ];
 	    
-	    while ( fgets(buf, sizeof buf, stdin) != NULL){
-	    	char* tokens = strtok(buf," ");
-	    	while (tokens){
-	    		printf("Token: %s\n",tokens);
-	    		tokens = strtok(NULL, " ");	//Esto lo que hace es que avance uno por uno separado por un espacio, es una forma especial de llamarlo usando el NULL
+	    while ( fgets(buf, sizeof buf, stdin) != NULL ){
+
+	    	char* tokensFirst = strtok(buf," ");
+
+	    	while (tokensFirst){
+	    		printf("Token: %s\n",tokensFirst);
+	    		tokensFirst = strtok(NULL, " ");	//Esto lo que hace es que avance uno por uno separado por un espacio, es una forma especial de llamarlo usando el NULL
 	    	}
-						
+
+	    	if ( fgets(buf, sizeof buf, stdin) == NULL ){
+	    		//Si pasa esto, es porque no me vienen de a pares las matrices, es un error y lo reporto
+	    		printf("Abortando, txt con cantidad de matrices impares.\n");
+	    		return 1;
+	    	}else{
+	    		char* tokensSecond = strtok(buf," ");
+
+	    		while (tokensSecond){
+		    		printf("Token: %s\n",tokensSecond);
+		    		tokensSecond = strtok(NULL, " ");	//Esto lo que hace es que avance uno por uno separado por un espacio, es una forma especial de llamarlo usando el NULL
+	    		}
+	    	}					
 	    }
 	}
 
