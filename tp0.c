@@ -2,7 +2,7 @@
 #include <string.h>
 #include <ctype.h>
 #define ARGUMENTS_NEEDED 2
-#define CURRENT_VERSION "0.103"
+#define CURRENT_VERSION "0.104"
 #define VERSION_OPTION_ONE "-v"
 #define VERSION_OPTION_TWO "--version"
 #define HELP_OPTION_ONE "-h"
