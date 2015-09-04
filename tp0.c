@@ -33,9 +33,14 @@ int main (int argc, char *argv[]) {
 		char buf[BUFSIZ];
 	    
 	    while ( fgets(buf, sizeof buf, stdin) != NULL){
-			printf("%s",buf);
+	    	char* tokens = strtok(buf," ");
+	    	while (tokens){
+	    		printf("Token: %s\n",tokens);
+	    		tokens = strtok(NULL, " ");	//Esto lo que hace es que avance uno por uno separado por un espacio, es una forma especial de llamarlo usando el NULL
+	    	}
+						
 	    }
-	}	
+	}
 
 	return 0;
 }
