@@ -37,25 +37,43 @@ int main (int argc, char *argv[]) {
 	    
 	    while ( fgets(buf, sizeof buf, stdin) != NULL ){
 
-	    	char* tokensFirst = strtok(buf," ");
+	    	char* tokensFirst = strtok(buf,"\n");	//Elimino la posibilidad que esté
+	    	tokensFirst = strtok(buf,"x");
 
-	    	while (tokensFirst){
-	    		printf("Token: %s\n",tokensFirst);
-	    		tokensFirst = strtok(NULL, " ");	//Esto lo que hace es que avance uno por uno separado por un espacio, es una forma especial de llamarlo usando el NULL
+	    	int rowsFirst = atoi(tokensFirst);
+
+	    	tokensFirst = strtok(NULL, " ");
+
+	    	int columnsFirst = atoi(tokensFirst);
+
+	    	printf("Rows First: %d\nColumns First: %d\n", rowsFirst,columnsFirst);
+
+	    	while (tokensFirst = strtok(NULL, " ")){	    		
+	    		printf("Values First: %s\n",tokensFirst);
 	    	}
+	    	printf("\n");	
 
 	    	if ( fgets(buf, sizeof buf, stdin) == NULL ){
 	    		//Si pasa esto, es porque no me vienen de a pares las matrices, es un error y lo reporto
 	    		printf("Abortando, txt con cantidad de matrices impares.\n");
 	    		return 1;
 	    	}else{
-	    		char* tokensSecond = strtok(buf," ");
+	    		char* tokensSecond = strtok(buf,"\n");
+	    		tokensSecond = strtok(buf,"x");
 
-	    		while (tokensSecond){
-		    		printf("Token: %s\n",tokensSecond);
-		    		tokensSecond = strtok(NULL, " ");	//Esto lo que hace es que avance uno por uno separado por un espacio, es una forma especial de llamarlo usando el NULL
-	    		}
-	    	}					
+	    		int rowsSecond = atoi(tokensSecond);
+
+				tokensSecond = strtok(NULL, " ");
+
+		    	int columnsSecond = atoi(tokensSecond);
+
+		    	printf("Rows Second: %d\nColumns Second: %d\n", rowsSecond,columnsSecond);
+
+		    	while (tokensSecond = strtok(NULL, " ")){	    		
+		    		printf("Values Second: %s\n",tokensSecond);
+		    	}
+		    	printf("\n");
+	    	}				
 	    }
 	}
 
