@@ -23,6 +23,7 @@ int main (int argc, char *argv[]) {
 			return 0;
 		}
 	}
+	
 	else{
 		//Una vez que se llego acá empiezo a ver las matrices que me vienen del cat con el siguiente formato:
 		//2x3 2 3 4 5 6.1 
@@ -33,12 +34,6 @@ int main (int argc, char *argv[]) {
 	    
 	    while ( fgets(buf, sizeof buf, stdin) != NULL){
 			printf("%s",buf);
-	    }
-	    if (buf[strlen(buf)-1] == '\n') {
-	        // read full line
-	        
-	    } else {
-	        // line was truncated
 	    }
 	}	
 
