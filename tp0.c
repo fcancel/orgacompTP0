@@ -110,7 +110,9 @@ int main (int argc, char *argv[]) {
 			    	}
 			    	totRow += columnsFirst;
 			    	f = totRow;
+			    	s = 0;
 		    	}
+		    	printf("\n");
 
 		    	free(valuesFirst);
 	    		free(valuesSecond);	
