@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <ctype.h>
+#include <stdlib.h>
 #define ARGUMENTS_NEEDED 2
 #define CURRENT_VERSION "0.104"
 #define VERSION_OPTION_ONE "-v"
@@ -48,8 +49,12 @@ int main (int argc, char *argv[]) {
 
 	    	printf("Rows First: %d\nColumns First: %d\n", rowsFirst,columnsFirst);
 
+	    	float* valuesFirst = malloc(rowsFirst * columnsFirst * sizeof(float));
+	    	int counter = 0;
 	    	while (tokensFirst = strtok(NULL, " ")){	    		
-	    		printf("Values First: %s\n",tokensFirst);
+	    		valuesFirst[counter] = atof(tokensFirst);
+	    		printf("Values First: %f\n",valuesFirst[counter]);
+	    		counter ++;
 	    	}
 	    	printf("\n");	
 
@@ -69,8 +74,12 @@ int main (int argc, char *argv[]) {
 
 		    	printf("Rows Second: %d\nColumns Second: %d\n", rowsSecond,columnsSecond);
 
-		    	while (tokensSecond = strtok(NULL, " ")){	    		
-		    		printf("Values Second: %s\n",tokensSecond);
+		    	float* valuesSecond = malloc(rowsSecond * columnsSecond * sizeof(float));
+		    	counter = 0;
+		    	while (tokensSecond = strtok(NULL, " ")){
+		    		valuesSecond[counter] = atof(tokensSecond);    		
+		    		printf("Values Second: %f\n",valuesSecond[counter]);
+		    		counter++;
 		    	}
 		    	printf("\n");
 	    	}				
