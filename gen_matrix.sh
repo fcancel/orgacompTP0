@@ -20,12 +20,12 @@ echo "nro matrices: $number_matrix"
 for i in `seq $number_matrix`
 do
     line=""
-    cols=`shuf -i $min-$max -n 1`
     rows=`shuf -i $min-$max -n 1`
+    cols=`shuf -i $min-$max -n 1`
 
 	total=$(($cols * $rows))
 
-    line="${cols}x${rows}"
+    line="${rows}x${cols}"
 
     for c in `seq $total`
     do
@@ -35,6 +35,26 @@ do
 
 line="${line}"
 echo $line >> $output
+
+
+#Para que si el primero es de la forma AxB el segundo sea BxC
+    line=""
+    rows="$cols"
+    cols=`shuf -i $min-$max -n 1`
+    
+
+    total=$(($cols * $rows))
+
+    line="${rows}x${cols}"
+
+    for c in `seq $total`
+    do
+        number=`shuf -i 0-100 -n 1`
+        line="$line $number "
+    done
+
+    line="${line}"
+    echo $line >> $output
 
 
 done
