@@ -29,7 +29,7 @@ do
 
     for c in `seq $total`
     do
-		number=`shuf -i 0-100 -n 1`
+		number="$RANDOM"
 		line="$line $number "
     done
 
@@ -49,7 +49,7 @@ echo $line >> $output
 
     for c in `seq $total`
     do
-        number=`shuf -i 0-100 -n 1`
+        number="$RANDOM"
         line="$line $number "
     done
 
