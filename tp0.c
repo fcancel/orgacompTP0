@@ -54,6 +54,7 @@ int main (int argc, char *argv[]) {
 	    	while (tokensFirst = strtok(NULL, " ")){	    		
 	    		valuesFirst[counter] = atof(tokensFirst);
 	    		counter ++;
+	    		//Justo después de acá falla con cosas muy grandes
 	    	}
 	    	printf("\n");	
 
