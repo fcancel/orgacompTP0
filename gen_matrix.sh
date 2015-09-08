@@ -20,8 +20,8 @@ echo "nro matrices: $number_matrix"
 for i in `seq $number_matrix`
 do
     line=""
-    rows=`shuf -i $min-$max -n 1`
-    cols=`shuf -i $min-$max -n 1`
+    rows=$(( ( RANDOM % $max )  + $min ))
+    cols=$(( ( RANDOM % $max )  + $min ))
 
 	total=$(($cols * $rows))
 
@@ -29,7 +29,7 @@ do
 
     for c in `seq $total`
     do
-		number="$RANDOM"
+		number=$(( ( RANDOM % 200 ) -100 ))
 		line="$line $number "
     done
 
@@ -40,7 +40,7 @@ echo $line >> $output
 #Para que si el primero es de la forma AxB el segundo sea BxC
     line=""
     rows="$cols"
-    cols=`shuf -i $min-$max -n 1`
+    cols=$(( ( RANDOM % $max )  + $min ))
     
 
     total=$(($cols * $rows))
@@ -49,7 +49,7 @@ echo $line >> $output
 
     for c in `seq $total`
     do
-        number="$RANDOM"
+        number=$(( ( RANDOM % 200 ) -100 ))
         line="$line $number "
     done
 
