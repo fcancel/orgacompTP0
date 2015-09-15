@@ -14,7 +14,9 @@
 //Llamar al programa de la forma:
 // cat algun.txt | tp0
 
-int main (int argc, char *argv[]) {
+float* readLine(char buf[], int *rowFirst, int *columnsFirst);
+
+int main(int argc, char *argv[]) {
 
 	//Primera idea
 	//Que sólo funcione con alguna de las siguientes formas
@@ -23,103 +25,106 @@ int main (int argc, char *argv[]) {
 	// ./tp0 file para que se le diga donde está ese archivo *.txt para que revise los numeritos que tenga adentro y haga su magia
 
 	//Como sólo le vamos a dejar eso, si argc es distinto de cero ya decimos que está mal y le mostramos como usarlo
-	if (argc > 1){
-		if (!strcmp(argv[1],VERSION_OPTION_ONE) || !strcmp(argv[1],VERSION_OPTION_TWO)){
-			printf ("Versión "CURRENT_VERSION"\n");
+	if (argc > 1) {
+		if (!strcmp(argv[1], VERSION_OPTION_ONE)
+				|| !strcmp(argv[1], VERSION_OPTION_TWO)) {
+			printf("Versión "CURRENT_VERSION"\n");
 			return 0;
 		}
 	}
-	
-	else{
+
+	else {
 		//Una vez que se llego acá empiezo a ver las matrices que me vienen del cat con el siguiente formato:
 		//2x3 2 3 4 5 6.1 
 		//Me van a venir de a pares, así que tendré que verificar
 
-	//Sacado de: http://stackoverflow.com/questions/16163154/read-from-pipe-line-by-line-in-c
+		//Sacado de: http://stackoverflow.com/questions/16163154/read-from-pipe-line-by-line-in-c
 		//ACA SI FALLA CUANDO LAS COSAS SON MUY GRANDES CAMBIAR EL VALOR DE BUFSIZ
 		char buf[BUFSIZ];
-	    
-	    while ( fgets(buf, sizeof buf, stdin) != NULL ){
 
-	    	char* tokensFirst = strtok(buf,"\n");	//Elimino la posibilidad que esté
-	    	tokensFirst = strtok(buf,"x");
+		//TODO delete this line, is only for debug
+		FILE *fp = fopen("in.txt", "r");
+		int firstRow, firstColumn, secondRow, secondColumn;
 
-	    	int rowsFirst = atoi(tokensFirst);
+		while (fgets(buf, sizeof buf, fp) != NULL) {
 
-	    	tokensFirst = strtok(NULL, " ");
+			//read first line
+			float *valuesFirst = readLine(&buf, &firstRow, &firstColumn);
 
-	    	int columnsFirst = atoi(tokensFirst);
+			if (fgets(buf, sizeof buf, fp) == NULL) {
+				//Si pasa esto, es porque no me vienen de a pares las matrices, es un error y lo reporto
+				printf("Abortando, txt con cantidad de matrices impares.\n");
+				return ERROR_ODD_NUM_MATRICES;
+			} else {
 
-	    	float* valuesFirst = malloc(rowsFirst * columnsFirst * sizeof(float));	//Acordarse del free
-	    	int counter = 0;
-	    	while (tokensFirst = strtok(NULL, " ")){	    		
-	    		valuesFirst[counter] = atof(tokensFirst);
-	    		counter ++;
-	    	}
-	    	printf("\n");	
+				//read second line
+				float *valuesSecond = readLine(&buf, &secondRow, &secondColumn);
 
-	    	if ( fgets(buf, sizeof buf, stdin) == NULL ){
-	    		//Si pasa esto, es porque no me vienen de a pares las matrices, es un error y lo reporto
-	    		printf("Abortando, txt con cantidad de matrices impares.\n");
-	    		return ERROR_ODD_NUM_MATRICES;
-	    	}else{
-	    		char* tokensSecond = strtok(buf,"\n");
-	    		tokensSecond = strtok(buf,"x");
+				//Verifico que las columnas del primero sean iguales a las filas del segundo
+				if (firstColumn != secondRow) {
+					free(valuesFirst);
+					printf("\nColumnas del primero: %d\nFilas del segundo: %d\nIncompatibles, abortando...\n\n",
+							firstColumn, secondRow);
+					return ERROR_NOT_MATCHING_ROWCOL;
+				}
+				//Ahora que tengo todo, se viene el momento de mostrar el resultado
+//				printf("%dx%d", rowsFirst, columnsSecond);
 
-	    		int rowsSecond = atoi(tokensSecond);
+				int f = 0;
+				int s = 0;
+				int totCol = 0;
+				int totRow = 0;
+				float partialResult = 0.0f;
 
-				tokensSecond = strtok(NULL, " ");
+				for (totRow = 0; totRow < firstRow * firstColumn;) {
+					for (totCol = 0; totCol < secondColumn;) {
+						while (s <= (secondRow * secondColumn - 1)) {
+							partialResult += valuesFirst[f] * valuesSecond[s];
+							//printf ("\n\nWASD: %f\n\n",partialResult);
+							f++;
+							s += secondColumn;
+						}
+						printf(" %.2f", partialResult);
+						partialResult = 0.0f;
+						totCol++;
+						f = totRow;
+						s = totCol;
+					}
+					totRow += firstColumn;
+					f = totRow;
+					s = 0;
+				}
+				printf("\n");
 
-		    	int columnsSecond = atoi(tokensSecond);
-
-		    	//Verifico que las columnas del primero sean iguales a las filas del segundo
-		    	if (columnsFirst != rowsSecond){
-		    		free(valuesFirst);
-		    		printf("\nColumnas del primero: %d\nFilas del segundo: %d\nIncompatibles, abortando...\n\n",columnsFirst,rowsSecond);
-		    		return ERROR_NOT_MATCHING_ROWCOL;
-		    	}
-
-		    	float* valuesSecond = malloc(rowsSecond * columnsSecond * sizeof(float));	//Acordarse del free
-		    	counter = 0;
-		    	while (tokensSecond = strtok(NULL, " ")){
-		    		valuesSecond[counter] = atof(tokensSecond);	
-		    		counter++;
-		    	}
-
-		    	//Ahora que tengo todo, se viene el momento de mostrar el resultado
-		    	printf("%dx%d",rowsFirst,columnsSecond);
-
-		    	int f = 0;
-		    	int s = 0;
-		    	int totCol = 0;
-		    	int totRow = 0;
-		    	float partialResult = 0.0f;
-
-		    	for (totRow = 0; totRow < rowsFirst*columnsFirst;){
-		    		for(totCol = 0; totCol < columnsSecond;){
-			    		while(s <= (rowsSecond*columnsSecond -1)){
-			    			partialResult += valuesFirst[f] * valuesSecond[s];
-			    			//printf ("\n\nWASD: %f\n\n",partialResult);
-			    			f++;
-			    			s += columnsSecond;
-			    		}
-			    		printf(" %.2f",partialResult);
-			    		partialResult = 0.0f;
-			    		totCol++;
-			    		f = totRow;
-			    		s = totCol;  		
-			    	}
-			    	totRow += columnsFirst;
-			    	f = totRow;
-			    	s = 0;
-		    	}
-		    	printf("\n");
-
-		    	free(valuesFirst);
-	    		free(valuesSecond);	
-	    	}		
-	    }
+				free(valuesFirst);
+				free(valuesSecond);
+			}
+		}
 	}
 
 	return 0;
 }
+
+
+float* readLine(char *buf, int *firstRow, int *firstColumn) {
+
+	char* token = strtok(buf, "\n");	//Elimino la posibilidad que esté
+	token = strtok(buf, "x");
+
+	*firstRow = atoi(token);
+
+	token = strtok(NULL, " ");
+
+	*firstColumn = atoi(token);
+
+	float* values = malloc((*firstRow) * (*firstColumn) * sizeof(float));//Acordarse del free
+	int counter = 0;
+	while (token = strtok(NULL, " ")) {
+		values[counter] = atof(token);
+		counter++;
+	}
+	printf("\n");
+	return values;
+
+}
+
