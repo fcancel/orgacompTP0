@@ -36,6 +36,7 @@ int main (int argc, char *argv[]) {
 		//Me van a venir de a pares, así que tendré que verificar
 
 	//Sacado de: http://stackoverflow.com/questions/16163154/read-from-pipe-line-by-line-in-c
+		//ACA SI FALLA CUANDO LAS COSAS SON MUY GRANDES CAMBIAR EL VALOR DE BUFSIZ
 		char buf[BUFSIZ];
 	    
 	    while ( fgets(buf, sizeof buf, stdin) != NULL ){
@@ -54,7 +55,6 @@ int main (int argc, char *argv[]) {
 	    	while (tokensFirst = strtok(NULL, " ")){	    		
 	    		valuesFirst[counter] = atof(tokensFirst);
 	    		counter ++;
-	    		//Justo después de acá falla con cosas muy grandes
 	    	}
 	    	printf("\n");	
 
