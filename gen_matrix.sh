@@ -58,6 +58,3 @@ echo $line >> $output
 
 
 done
-
-
-
