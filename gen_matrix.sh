@@ -20,8 +20,8 @@ echo "nro matrices: $number_matrix"
 for i in `seq $number_matrix`
 do
     line=""
-    rows=$(( ( RANDOM % $max )  + $min ))
-    cols=$(( ( RANDOM % $max )  + $min ))
+    rows=$(( ( RANDOM % ($max - $min) )  + $min ))
+    cols=$(( ( RANDOM % ($max - $min) )  + $min ))
 
 	total=$(($cols * $rows))
 
