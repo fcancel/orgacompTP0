@@ -30,7 +30,8 @@ do
     for c in `seq $total`
     do
 		number=$(( ( RANDOM % 200 ) -100 ))
-		line="$line $number "
+        decimals=$((RANDOM % 99))
+		line="$line $number.$decimals "
     done
 
 line="${line}"
@@ -50,7 +51,8 @@ echo $line >> $output
     for c in `seq $total`
     do
         number=$(( ( RANDOM % 200 ) -100 ))
-        line="$line $number "
+        decimals=$((RANDOM % 99))
+        line="$line $number.$decimals "
     done
 
     line="${line}"
