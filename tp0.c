@@ -49,7 +49,7 @@ int main(int argc, char *argv[]) {
 			double *firstValues = parseLine( buf, &firstRow, &firstColumn );
 
 			if ( fgets(buf, sizeof buf, stdin) == NULL ){
-			    printf("Error, input file with invalid number of matrices.\n");
+			    fprintf(stderr, "ERROR: input file with invalid number of matrices.\n");
 			    return ERROR_ODD_NUM_MATRICES;
 
 			} else {
@@ -155,7 +155,7 @@ bool areCompatible( int firstColumn, int secondRow ) {
 	if ( firstColumn == secondRow )
 		return true;
 	else {
-		fprintf( stderr, "BAD OPERATION: first column: %d and second row: %d must be equals.",
+		fprintf( stderr, "ERROR: first column: %d and second row: %d must be equals\n",
 				firstColumn, secondRow );
 		return false;
 	}
