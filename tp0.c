@@ -12,13 +12,14 @@
 #define WHITE_SPACE " "
 #define ERROR_ODD_NUM_MATRICES 1
 #define ERROR_NOT_MATCHING_ROWCOL 2
+#define ERROR_NOT_MATCHING_ELEMENTS 3
 
 
 /**
  * parses line by tokens
  * return a pointer with all values
  */
-double* parseLine( char buf[], int *row, int *column );
+double* parseLine( char buf[], int *row, int *column, int *counter );
 
 /**
  * show message with help menu or current version
@@ -30,6 +31,10 @@ void showMessage( char *arg );
  */
 bool areCompatible( int firstColumn, int secondRow);
 
+/**
+ * validates if the line have the number of elements expected
+ */
+bool haveCorrectNumberOfElements(int numberElementsExpected, int counter);
 
 
 int main(int argc, char *argv[]) {
@@ -41,12 +46,20 @@ int main(int argc, char *argv[]) {
 
 		char buf[BUFSIZ*2];
 
+		int counter;
+
 		int firstRow, firstColumn, secondRow, secondColumn;
 
 		while ( fgets(buf, sizeof buf, stdin) != NULL ) {
 
 			//parse first line
-			double *firstValues = parseLine( buf, &firstRow, &firstColumn );
+			double *firstValues = parseLine( buf, &firstRow, &firstColumn, &counter );
+
+			if (!haveCorrectNumberOfElements( firstRow * firstColumn, counter)) {
+				fprintf( stderr, "ERROR: invalid number of elements in the line. %dx%d must contains %d elements\n",
+						firstRow, firstColumn, (firstRow) * (firstColumn) );
+				return ERROR_NOT_MATCHING_ELEMENTS;
+			}
 
 			if ( fgets(buf, sizeof buf, stdin) == NULL ){
 			    fprintf(stderr, "ERROR: input file with invalid number of matrices.\n");
@@ -55,7 +68,14 @@ int main(int argc, char *argv[]) {
 			} else {
 
 				//read second line
-				double *secondValues = parseLine( buf, &secondRow, &secondColumn);
+				double *secondValues = parseLine( buf, &secondRow, &secondColumn, &counter );
+
+				if (!haveCorrectNumberOfElements( secondRow * secondColumn, counter )) {
+					fprintf( stderr, "ERROR: invalid number of elements in the line. %dx%d must contains %d elements\n",
+							secondRow, secondColumn, (secondRow) * (secondColumn) );
+					return ERROR_NOT_MATCHING_ELEMENTS;
+				}
+
 
 				//validate if matrices are compatible for multiplication
 				if ( !areCompatible(firstColumn, secondRow) ) {
@@ -102,7 +122,7 @@ int main(int argc, char *argv[]) {
 
 
 
-double* parseLine( char *buf, int *row, int *column ) {
+double* parseLine( char *buf, int *row, int *column, int *counter ) {
 
 	//complete line
 	char* token = strtok( buf, "\n" );
@@ -117,10 +137,10 @@ double* parseLine( char *buf, int *row, int *column ) {
 
 	double *values = malloc( (*row) * (*column) * sizeof(double) );
 
-	int counter = 0;
+	*counter = 0;
 	while ( (token = strtok(NULL, WHITE_SPACE)) ) {
-		values[counter] = atof( token );
-		counter++;
+		values[*counter] = atof( token );
+		(*counter) = (*counter) +1;
 	}
 
 	//printf( "\n" );
@@ -159,5 +179,10 @@ bool areCompatible( int firstColumn, int secondRow ) {
 				firstColumn, secondRow );
 		return false;
 	}
+}
+
+bool haveCorrectNumberOfElements(int numberElementsExpected, int counter){
+	return ( counter == numberElementsExpected );
+
 }
 
