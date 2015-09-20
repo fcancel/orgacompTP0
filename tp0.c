@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
 	}
 	else {
 
-		char buf[BUFSIZ];
+		char buf[BUFSIZ*2];
 
 		int firstRow, firstColumn, secondRow, secondColumn;
 
@@ -71,7 +71,7 @@ int main(int argc, char *argv[]) {
 				double partialResult = 0.0f;
 
 				printf("%dx%d", firstRow, secondColumn);
-
+				
 				for ( totRow = 0; totRow < firstRow * firstColumn; ) {
 					for ( totCol = 0; totCol < secondColumn; ) {
 						while ( s <= (secondRow * secondColumn - 1) ) {
@@ -123,7 +123,7 @@ double* parseLine( char *buf, int *row, int *column ) {
 		counter++;
 	}
 
-	printf( "\n" );
+	//printf( "\n" );
 	return values;
 
 }
