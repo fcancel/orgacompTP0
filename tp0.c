@@ -152,11 +152,8 @@ double* parseLine( char *buf, int *row, int *column, int *counter ) {
 	*counter = 0;
 	while ( (token = strtok(NULL, WHITE_SPACE)) ) {
 		values[*counter] = atof( token );
-		printf("%f ",values[*counter]);
 		(*counter) = (*counter) +1;
 	}
-	printf("%d",*counter);
-	//printf( "\n" );
 	return values;
 
 }
