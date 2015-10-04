@@ -42,6 +42,11 @@ bool haveCorrectNumberOfElements(int numberElementsExpected, int counter);
  */
 char *getWholeLine(FILE * fp);
 
+/**
+ * MIPS function to multiply matrices
+ */
+double MIPSfunction(double* firstValues, int firstOffset, double* secondValues, int secondOffset);
+
 int main(int argc, char *argv[]) {
 
 	if ( argc > 1 ) {
@@ -106,7 +111,7 @@ int main(int argc, char *argv[]) {
 				for ( totRow = 0; totRow < firstRow * firstColumn; ) {
 					for ( totCol = 0; totCol < secondColumn; ) {
 						while ( s <= (secondRow * secondColumn - 1) ) {
-							partialResult += firstValues[f] * secondValues[s];
+							partialResult += MIPSfunction(firstValues, f, secondValues, s);
 							f++;
 							s += secondColumn;
 						}
@@ -154,7 +159,7 @@ double* parseLine( char *buf, int *row, int *column, int *counter ) {
 		values[*counter] = atof( token );
 		(*counter) = (*counter) +1;
 	}
-	return values;
+ 	return values;
 
 }
 
