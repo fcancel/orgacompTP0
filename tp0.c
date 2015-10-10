@@ -42,10 +42,7 @@ bool haveCorrectNumberOfElements(int numberElementsExpected, int counter);
  */
 char *getWholeLine(FILE * fp);
 
-/**
- * MIPS function to multiply matrices
- */
-double MIPSfunction(double* firstValues, int firstOffset, double* secondValues, int secondOffset);
+void multiplyMatrices(int firstRow, int firstColumn, int secondRow, int secondColumn, double * firstValues, double * secondValues);
 
 int main(int argc, char *argv[]) {
 
@@ -99,33 +96,7 @@ int main(int argc, char *argv[]) {
 					return ERROR_NOT_MATCHING_ROWCOL;
 				}
 
-				//multiply matrices
-				int f = 0;
-				int s = 0;
-				int totCol = 0;
-				int totRow = 0;
-				double partialResult = 0.0f;
-
-				printf("%dx%d", firstRow, secondColumn);
-				
-				for ( totRow = 0; totRow < firstRow * firstColumn; ) {
-					for ( totCol = 0; totCol < secondColumn; ) {
-						while ( s <= (secondRow * secondColumn - 1) ) {
-							partialResult += MIPSfunction(firstValues, f, secondValues, s);
-							f++;
-							s += secondColumn;
-						}
-						printf( " %.2f", partialResult );
-						partialResult = 0.0f;
-						totCol++;
-						f = totRow;
-						s = totCol;
-					}
-					totRow += firstColumn;
-					f = totRow;
-					s = 0;
-				}
-				printf( "\n" );
+				multiplyMatrices(firstRow, firstColumn, secondRow, secondColumn, firstValues, secondValues);
 
 				free( firstValues );
 				free( secondValues );
@@ -136,7 +107,6 @@ int main(int argc, char *argv[]) {
 
 	return 0;
 }
-
 
 
 double* parseLine( char *buf, int *row, int *column, int *counter ) {
@@ -159,7 +129,7 @@ double* parseLine( char *buf, int *row, int *column, int *counter ) {
 		values[*counter] = atof( token );
 		(*counter) = (*counter) +1;
 	}
- 	return values;
+	return values;
 
 }
 
@@ -235,4 +205,34 @@ char *getWholeLine(FILE *fp) {
         } /* if */
     } /* for */
     return line;
+}
+
+void multiplyMatrices (int firstRow, int firstColumn, int secondRow, int secondColumn, double * firstValues, double * secondValues){
+		//multiply matrices
+	int f = 0;
+	int s = 0;
+	int totCol = 0;
+	int totRow = 0;
+	double partialResult = 0.0f;
+
+	printf("%dx%d", firstRow, secondColumn);
+	
+	for ( totRow = 0; totRow < firstRow * firstColumn; ) {
+		for ( totCol = 0; totCol < secondColumn; ) {
+			while ( s <= (secondRow * secondColumn - 1) ) {
+				partialResult += firstValues[f] * secondValues[s];
+				f++;
+				s += secondColumn;
+			}
+			printf( " %.2f", partialResult );
+			partialResult = 0.0f;
+			totCol++;
+			f = totRow;
+			s = totCol;
+		}
+		totRow += firstColumn;
+		f = totRow;
+		s = 0;
+	}
+	printf( "\n" );
 }
