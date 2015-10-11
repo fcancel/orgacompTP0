@@ -1,15 +1,21 @@
 #void multiplyMatrices(int firstRow, int firstColumn, int secondRow, int secondColumn, double * firstValues, double * secondValues);
 
 #include <mips/regdef.h>
+#include <sys/syscall.h>
+
+#define SIZE_stringNewline 1
+#define SIZE_stringX 1
+#define SIZE_stringSpace 1
+#define std_out 1
 
         .text
-        .globl MIPSfunction
-MIPSfunction:
+        .globl multiplyMatrices
+multiplyMatrices:
         #Antes que nada, como me vienen 6 variables, voy a guardar en variables temporales
         #Las dos variables que me van a quedar afuera, que son los dos punteros
         # firstValues y secondValues
-        lw      t0, 16(sp)      #Guardo en t0 el valor del puntero firstValues
-        lw      t1, 20(sp)      #Guardo en t1 el valor del puntero secondValues
+        lw      t4, 16(sp)      #Guardo en t0 el valor del puntero firstValues
+        lw      t5, 20(sp)      #Guardo en t1 el valor del puntero secondValues
 
         #Voy a necesitar espacio para 4 variables int y una double
         subu    sp, sp, 64      #Reservo X slots de 32 bits
@@ -22,16 +28,18 @@ MIPSfunction:
         sw      a1, 20(sp)      #En 20(sp) tengo firstColumn que viene de afuera
         sw      a2, 24(sp)      #En 24(sp) tengo secondRow que viene de afuera
         sw      a3, 28(sp)      #En 28(sp) tengo secondColumn que viene de afuera
-        sw      t0, 32(sp)      #En 32(sp) tengo el puntero firstValues
-        sw      t1, 36(sp)      #En 36(sp) tengo el puntero secondValues
+        sw      t4, 32(sp)      #En 32(sp) tengo el puntero firstValues
+        sw      t5, 36(sp)      #En 36(sp) tengo el puntero secondValues
 
 primerPrint:
 #       printf("%dx%d", firstRow, secondColumn);
         li      v0, 1           #El 1 es el codigo para hacer un print int
         la      a0, 16(sp)      #Meto en a0 el valor de firstRow
         syscall                 #Va a printear el valor de a0, que en este caso es firstRow
-        li      v0, 4           #El 4 es el codigo para hacer un print string
-        la      a0, stringX     #Load address of string to be printed into $a0
+        li      v0, SYS_write   #Le digo que haga un sys_write
+        la      a0, std_out     #Le digo donde va a ir a parar el write
+        la      a1, stringX     #Le digo que quiero que escriba
+        la      a2, SIZE_stringX        #Le digo cuanto ocupa
         syscall                 #Va a printear el valor de a0, que en este caso es 'x'
         li      v0,1            #El 1 es el codigo para hacer un print int
         la      a0, 28(sp)      #Meto en a0 el valor de secondColumn
@@ -84,7 +92,7 @@ multiplicacion:
         add     t1, t1, t3      #Hice secondValues[secondOffset]
         l.d     $f0, 0(t0)      # f0 a f1 van a tener el valor del double firstValues[firstOffset] en f0
         l.d     $f2, 0(t1)      # f2 a f3 van a tener el valor del double secondValues[secondOffset] en f2
-        mul.d   $f12. $f0, $f2   # f12 a f13 van a tener el valor de su multiplicacion o sea partialResult
+        mul.d   $f12, $f0, $f2   # f12 a f13 van a tener el valor de su multiplicacion o sea partialResult
 
 #       firstOffset++;
         lw      t0, 0(sp)       #meto en t0 firstOffset
@@ -141,13 +149,15 @@ outOfSecondFor:
 
 lastPrint:
         li      v0, 4           #El 4 es el codigo para hacer un print string
-        la      a0, stringX     #Load address of string to be printed into $a0
+        la      a0, stringNewline     #Load address of string to be printed into $a0
         syscall                 #Va a printear el valor de a0, que en este caso es "\n"
         #Y acá habría terminado
         addu    sp, sp, 64
         j       ra              #Salto y me voy de la función
 
-        .data
-stringX         .asciiz "x"
-stringNewline   .asciiz "\n"
-stringSpace     .asciiz " "
+
+        .align 0
+        .rdata
+stringX:         .asciiz "x"
+stringNewline:   .asciiz "\n"
+stringSpace:     .asciiz " "

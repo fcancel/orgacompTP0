@@ -45,7 +45,7 @@ char *getWholeLine(FILE * fp);
 /**
  * function that will be made in MIPS32 that will print the results of multiplying mamtrices
  **/
-void multiplyMatrices(int firstRow, int firstColumn, int secondRow, int secondColumn, double * firstValues, double * secondValues);
+extern void multiplyMatrices(int firstRow, int firstColumn, int secondRow, int secondColumn, double * firstValues, double * secondValues);
 
 int main(int argc, char *argv[]) {
 
@@ -210,32 +210,3 @@ char *getWholeLine(FILE *fp) {
     return line;
 }
 
-void multiplyMatrices (int firstRow, int firstColumn, int secondRow, int secondColumn, double * firstValues, double * secondValues){
-		//multiply matrices
-	int firstOffset = 0;
-	int secondOffset = 0;
-	int totCol = 0;
-	int totRow = 0;
-	double partialResult = 0.0f;
-
-	printf("%dx%d", firstRow, secondColumn);
-	
-	for ( totRow = 0; totRow < firstRow * firstColumn; ) {
-		for ( totCol = 0; totCol < secondColumn; ) {
-			while ( secondOffset <= (secondRow * secondColumn - 1) ) {
-				partialResult += firstValues[firstOffset] * secondValues[secondOffset];
-				firstOffset++;
-				secondOffset += secondColumn;
-			}
-			printf( " %.2f", partialResult );
-			partialResult = 0.0f;
-			totCol++;
-			firstOffset = totRow;
-			secondOffset = totCol;
-		}
-		totRow += firstColumn;
-		firstOffset = totRow;
-		secondOffset = 0;
-	}
-	printf( "\n" );
-}
