@@ -12,7 +12,7 @@ MIPSfunction:
         lw      t1, 20(sp)      #Guardo en t1 el valor del puntero secondValues
 
         #Voy a necesitar espacio para 4 variables int y una double
-        subu    sp, sp, 68      #Reservo X slots de 32 bits
+        subu    sp, sp, 64      #Reservo X slots de 32 bits
         li      t0, 0           #Acá inicio mivariable firstOffset
         sw      t0, 0(sp)       #En 0(sp) tengo int firstOffset = 0
         sw      t0, 4(sp)       #En 4(sp) tengo int secondOffset = 0
@@ -144,6 +144,7 @@ lastPrint:
         la      a0, stringX     #Load address of string to be printed into $a0
         syscall                 #Va a printear el valor de a0, que en este caso es "\n"
         #Y acá habría terminado
+        addu    sp, sp, 64
         j       ra              #Salto y me voy de la función
 
         .data
