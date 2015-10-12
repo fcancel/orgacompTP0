@@ -167,12 +167,12 @@ int showMessage( char *arg ){
 	} else {
 
 		if ( printf( "Usage: \n"
-				"tp -h \ntp -V \ntp < in_file > out_file\n"
+				"tp1 -h \ntp1 -V \ntp1 < in_file > out_file\n"
 				"Options: \n"
 				"-V, --version \n-h, --help\n"
 				"Examples: \n"
-				"tp < in.txt > out.txt\n"
-				"cat in.txt | tp > out.txt\n" ) < 0 ) return -1;
+				"tp1 < in.txt > out.txt\n"
+				"cat in.txt | tp1 > out.txt\n" ) < 0 ) return -1;
 
 	}
 
