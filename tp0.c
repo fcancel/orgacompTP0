@@ -26,7 +26,7 @@ double* parseLine( char buf[], int *row, int *column, int *counter );
 /**
  * show message with help menu or current version
  */
-void showMessage( char *arg );
+int showMessage( char *arg );
 
 /**
  * validates that can do the multiplication between matrices
@@ -51,7 +51,7 @@ extern double multiplyMatrices(int firstOffset, int secondOffset, int secondRow,
 int main(int argc, char *argv[]) {
 
 	if ( argc > 1 ) {
-		showMessage( argv[1] );
+		if (showMessage( argv[1] ) < 0) return -1;
 	}
 	else {
 
@@ -67,14 +67,14 @@ int main(int argc, char *argv[]) {
 			double *firstValues = parseLine( buf, &firstRow, &firstColumn, &counter );
 
 			if (!haveCorrectNumberOfElements( firstRow * firstColumn, counter)) {
-				fprintf( stderr, "ERROR: invalid number of elements in the line. %dx%d must contain %d elements\n",
-						firstRow, firstColumn, (firstRow) * (firstColumn) );
+				if (fprintf( stderr, "ERROR: invalid number of elements in the line. %dx%d must contain %d elements\n",
+						firstRow, firstColumn, (firstRow) * (firstColumn) ) < 0) return -1;
 				free(firstValues);
 				return ERROR_NOT_MATCHING_ELEMENTS;
 			}
 
 			if ( (buf = getWholeLine(stdin)) == NULL ){
-			    fprintf(stderr, "ERROR: input file with invalid number of matrices.\n");
+			    if (fprintf(stderr, "ERROR: input file with invalid number of matrices.\n") < 0 ) return -1;
 			    free(buf);
 			    free(firstValues);
 			    return ERROR_ODD_NUM_MATRICES;
@@ -85,8 +85,8 @@ int main(int argc, char *argv[]) {
 				double *secondValues = parseLine( buf, &secondRow, &secondColumn, &counter );
 
 				if (!haveCorrectNumberOfElements( secondRow * secondColumn, counter )) {
-					fprintf( stderr, "ERROR: invalid number of elements in the line. %dx%d must contain %d elements\n",
-							secondRow, secondColumn, (secondRow) * (secondColumn) );
+					if (fprintf( stderr, "ERROR: invalid number of elements in the line. %dx%d must contain %d elements\n",
+							secondRow, secondColumn, (secondRow) * (secondColumn) ) < 0 ) return -1;
 					free(firstValues);
 					free(secondValues);
 					free(buf);
@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
 				
 				for ( totRow = 0; totRow < firstRow * firstColumn; ) {
 					for ( totCol = 0; totCol < secondColumn; ) {
-						printf( " %.2f", multiplyMatrices(f, s, secondRow, secondColumn, firstValues, secondValues) );
+						if (printf( " %.2f", multiplyMatrices(f, s, secondRow, secondColumn, firstValues, secondValues) ) < 0 ) return -1;
 						partialResult = 0.0f;
 						totCol++;
 						f = totRow;
@@ -121,7 +121,7 @@ int main(int argc, char *argv[]) {
 					f = totRow;
 					s = 0;
 				}
-				printf( "\n" );
+				if ( printf( "\n" ) < 0 ) return -1;
 				free( firstValues );
 				free( secondValues );
 			}
@@ -158,23 +158,25 @@ double* parseLine( char *buf, int *row, int *column, int *counter ) {
 }
 
 
-void showMessage( char *arg ){
+int showMessage( char *arg ){
 
 	if ( (strcmp(arg, VERSION_OPTION_ONE) == 0) || (strcmp(arg, VERSION_OPTION_TWO) == 0) ){
 
-		printf ( "Current version: %s\n", CURRENT_VERSION );
+		if (printf ( "Current version: %s\n", CURRENT_VERSION ) < 0 ) return -1;
 
 	} else {
 
-		printf( "Usage: \n" );
-		printf( "tp0 -h \ntp0 -V \ntp0 < in_file > out_file\n" );
-		printf( "Options: \n" );
-		printf( "-V, --version \n-h, --help\n" );
-		printf( "Examples: \n" );
-		printf( "tp0 < in.txt > out.txt\n" );
-		printf( "cat in.txt | tp0 > out.txt\n" );
+		if ( printf( "Usage: \n"
+				"tp0 -h \ntp0 -V \ntp0 < in_file > out_file\n"
+				"Options: \n"
+				"-V, --version \n-h, --help\n"
+				"Examples: \n"
+				"tp0 < in.txt > out.txt\n"
+				"cat in.txt | tp0 > out.txt\n" ) < 0 ) return -1;
 
 	}
+
+	return 0;
 
 }
 
@@ -184,8 +186,8 @@ bool areCompatible( int firstColumn, int secondRow ) {
 	if ( firstColumn == secondRow )
 		return true;
 	else {
-		fprintf( stderr, "ERROR: first column: %d and second row: %d must be equals\n",
-				firstColumn, secondRow );
+		if (fprintf( stderr, "ERROR: first column: %d and second row: %d must be equals\n",
+				firstColumn, secondRow ) < 0 ) return -1;
 		return false;
 	}
 }
