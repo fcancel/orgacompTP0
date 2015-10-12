@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
+#include <unistd.h>
 
 #define ARGUMENTS_NEEDED 2
 #define CURRENT_VERSION "1.0"
@@ -43,9 +44,9 @@ bool haveCorrectNumberOfElements(int numberElementsExpected, int counter);
 char *getWholeLine(FILE * fp);
 
 /**
- * function that will be made in MIPS32 that will print the results of multiplying mamtrices
- **/
-extern void multiplyMatrices(int firstRow, int firstColumn, int secondRow, int secondColumn, double * firstValues, double * secondValues);
+ * MIPS function used to multiply matrices passed on firstValues and secondValues
+ */
+extern double multiplyMatrices(int firstOffset, int secondOffset, int secondRow, int secondColumn, double * firstValues, double * secondValues);
 
 int main(int argc, char *argv[]) {
 
@@ -99,8 +100,28 @@ int main(int argc, char *argv[]) {
 					return ERROR_NOT_MATCHING_ROWCOL;
 				}
 
-				multiplyMatrices(firstRow, firstColumn, secondRow, secondColumn, firstValues, secondValues);
+					//multiply matrices
+				int f = 0;
+				int s = 0;
+				int totCol = 0;
+				int totRow = 0;
+				double partialResult = 0.0f;
 
+				printf("%dx%d", firstRow, secondColumn);
+				
+				for ( totRow = 0; totRow < firstRow * firstColumn; ) {
+					for ( totCol = 0; totCol < secondColumn; ) {
+						printf( " %.2f", multiplyMatrices(f, s, secondRow, secondColumn, firstValues, secondValues) );
+						partialResult = 0.0f;
+						totCol++;
+						f = totRow;
+						s = totCol;
+					}
+					totRow += firstColumn;
+					f = totRow;
+					s = 0;
+				}
+				printf( "\n" );
 				free( firstValues );
 				free( secondValues );
 			}
@@ -209,4 +230,3 @@ char *getWholeLine(FILE *fp) {
     } /* for */
     return line;
 }
-
