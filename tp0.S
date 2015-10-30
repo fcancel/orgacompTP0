@@ -8,6 +8,26 @@
 #define SIZE_stringSpace 1
 #define std_out 1
 
+###FUNCION EQUIVALENTE EN C
+#void multiplyMatrices (int firstRow, int firstColumn, int secondRow, int secondColumn, double * firstValues, double * secondValues){
+#		//multiply matrices
+#	int firstOffset = 0;
+#	int secondOffset = 0;
+#	int totCol = 0;
+#	int totRow = 0;
+#	double partialResult = 0.0f;
+#
+#		while ( secondOffset <= (secondRow * secondColumn - 1) ) {
+#			partialResult += firstValues[firstOffset] * secondValues[secondOffset];
+#			firstOffset++;
+#			secondOffset += secondColumn;
+#		}
+#		printf( " %.2f", partialResult );
+#		partialResult = 0.0f;
+#		totCol++;
+#		firstOffset = totRow;
+#		secondOffset = totCol;
+
         .text
         .globl multiplyMatrices
 multiplyMatrices:
