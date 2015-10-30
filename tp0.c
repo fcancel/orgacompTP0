@@ -67,14 +67,14 @@ int main(int argc, char *argv[]) {
 			double *firstValues = parseLine( buf, &firstRow, &firstColumn, &counter );
 
 			if (!haveCorrectNumberOfElements( firstRow * firstColumn, counter)) {
-				if (fprintf( stderr, "ERROR: invalid number of elements in the line. %dx%d must contain %d elements\n",
-						firstRow, firstColumn, (firstRow) * (firstColumn) ) < 0) return -1;
+				fprintf( stderr, "ERROR: invalid number of elements in the line. %dx%d must contain %d elements\n",
+						firstRow, firstColumn, (firstRow) * (firstColumn) );
 				free(firstValues);
 				return ERROR_NOT_MATCHING_ELEMENTS;
 			}
 
 			if ( (buf = getWholeLine(stdin)) == NULL ){
-			    if (fprintf(stderr, "ERROR: input file with invalid number of matrices.\n") < 0 ) return -1;
+			    fprintf(stderr, "ERROR: input file with invalid number of matrices.\n");
 			    free(buf);
 			    free(firstValues);
 			    return ERROR_ODD_NUM_MATRICES;
@@ -85,8 +85,8 @@ int main(int argc, char *argv[]) {
 				double *secondValues = parseLine( buf, &secondRow, &secondColumn, &counter );
 
 				if (!haveCorrectNumberOfElements( secondRow * secondColumn, counter )) {
-					if (fprintf( stderr, "ERROR: invalid number of elements in the line. %dx%d must contain %d elements\n",
-							secondRow, secondColumn, (secondRow) * (secondColumn) ) < 0 ) return -1;
+					fprintf( stderr, "ERROR: invalid number of elements in the line. %dx%d must contain %d elements\n",
+							secondRow, secondColumn, (secondRow) * (secondColumn) );
 					free(firstValues);
 					free(secondValues);
 					free(buf);
@@ -107,11 +107,17 @@ int main(int argc, char *argv[]) {
 				int totRow = 0;
 				double partialResult = 0.0f;
 
-				printf("%dx%d", firstRow, secondColumn);
+				if ( printf("%dx%d", firstRow, secondColumn) < 0 ){
+					fprintf(stderr, "Error while printing to output file.\n");
+					return -1;
+				}
 				
 				for ( totRow = 0; totRow < firstRow * firstColumn; ) {
 					for ( totCol = 0; totCol < secondColumn; ) {
-						if (printf( " %.2f", multiplyMatrices(f, s, secondRow, secondColumn, firstValues, secondValues) ) < 0 ) return -1;
+						if ( printf( " %.2f", multiplyMatrices(f, s, secondRow, secondColumn, firstValues, secondValues) ) < 0 ){
+							fprintf(stderr, "Error while printing to output file.\n");
+							return -1;	
+						}
 						partialResult = 0.0f;
 						totCol++;
 						f = totRow;
@@ -121,7 +127,10 @@ int main(int argc, char *argv[]) {
 					f = totRow;
 					s = 0;
 				}
-				if ( printf( "\n" ) < 0 ) return -1;
+				if ( printf( "\n" ) < 0 ){
+					fprintf(stderr, "Error while printing to output file.\n");
+					return -1;
+				}
 				free( firstValues );
 				free( secondValues );
 			}
@@ -162,7 +171,10 @@ int showMessage( char *arg ){
 
 	if ( (strcmp(arg, VERSION_OPTION_ONE) == 0) || (strcmp(arg, VERSION_OPTION_TWO) == 0) ){
 
-		if (printf ( "Current version: %s\n", CURRENT_VERSION ) < 0 ) return -1;
+		if (printf ( "Current version: %s\n", CURRENT_VERSION ) < 0 ){
+			fprintf(stderr, "Error while printing to output file.\n");
+			return -1;		
+		}
 
 	} else {
 
@@ -172,7 +184,10 @@ int showMessage( char *arg ){
 				"-V, --version \n-h, --help\n"
 				"Examples: \n"
 				"tp1 < in.txt > out.txt\n"
-				"cat in.txt | tp1 > out.txt\n" ) < 0 ) return -1;
+				"cat in.txt | tp1 > out.txt\n" ) < 0 ){
+					fprintf(stderr, "Error while printing to output file.\n");
+					return -1;
+				}
 
 	}
 
