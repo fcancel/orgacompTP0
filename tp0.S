@@ -16,24 +16,37 @@ multiplyMatrices:
         # firstValues y secondValues
         lw      t4, 16(sp)      #Guardo en t4 el valor del puntero firstValues
         lw      t5, 20(sp)      #Guardo en t5 el valor del puntero secondValues
+        
+        .frame  $29, 40, $31
+        .set    noreorder
+        .cpload $25
+        .set    reorder
 
         #Voy a necesitar espacio para 4 variables int y una double
-        subu    sp, sp, 32      #Reservo X slots de 64 bits
-        sw      a0, 0(sp)       #En 0(sp) tengo int firstOffset
-        sw      a1, 4(sp)       #En 4(sp) tengo int secondOffset
-        sw      a2, 8(sp)       #En 8(sp) tengo int secondRow
-        sw      a3, 12(sp)      #En 12(sp) tengo int secondColumn
-        sw      t4, 16(sp)      #En 16(sp) tengo el puntero firstValues
-        sw      t5, 20(sp)      #En 20(sp) tengo el puntero secondValues
+        subu    sp, sp, 40      #Reservo X slots de 64 bits
+        
+        .cprestore 24           #En el 24 voy a poner mi gp
+        
+        sw      gp, 24(sp)      #Guardo mi stack pointer
+        sw      fp, 28(sp)      #Guardo mi return address
+        sw      ra, 32(sp)      #Guardo mi frame pointer
+        move    fp, sp          #Ahora debería trabajar con mi frame pointer en vez de stack pointer
+
+        sw      a0, 0(fp)       #En 0(sp) tengo int firstOffset
+        sw      a1, 4(fp)       #En 4(sp) tengo int secondOffset
+        sw      a2, 8(fp)       #En 8(sp) tengo int secondRow
+        sw      a3, 12(fp)      #En 12(sp) tengo int secondColumn
+        sw      t4, 16(fp)      #En 16(sp) tengo el puntero firstValues
+        sw      t5, 20(fp)      #En 20(sp) tengo el puntero secondValues
 
         li.d    $f0, 0.0
 
 unicoWhile:
 #       while ( secondOffset <= (secondRow * secondColumn - 1) )
         #Como siempre, conviene cargar todo de nuevo
-        lw      t0, 4(sp)       #cargo en t0 secondOffset
-        lw      t1, 8(sp)       #cargo en t1 secondRow 
-        lw      t2, 12(sp)      #cargo en t2 secondColumn
+        lw      t0, 4(fp)       #cargo en t0 secondOffset
+        lw      t1, 8(fp)       #cargo en t1 secondRow 
+        lw      t2, 12(fp)      #cargo en t2 secondColumn
         mulo    t3, t1, t2      #Multiplico con overflow secondRow * secondColumn y lo guardo en t3
         addi    t4, t3, -1      #Le resto uno a lo anterior y lo guardo en t4
 
@@ -42,10 +55,10 @@ unicoWhile:
 
 multiplicacion:
 #       partialResult += firstValues[firstOffset] * secondValues[secondOffset];
-        lw      t0, 16(sp)      #en t0 tengo firstValues
-        lw      t1, 20(sp)      #En t1 tengo secondValues
-        lw      t2, 0(sp)       #En t2 tengo firstOffset
-        lw      t3, 4(sp)       #En t3 tengo secondOffset
+        lw      t0, 16(fp)      #en t0 tengo firstValues
+        lw      t1, 20(fp)      #En t1 tengo secondValues
+        lw      t2, 0(fp)       #En t2 tengo firstOffset
+        lw      t3, 4(fp)       #En t3 tengo secondOffset
 #       Como todo está en double, cuando me desplace onda firstValues[1] tengo que ir al primero, y sumarle 64 bits
         sll     t2, t2, 3       #Multiplico por 8 para que me de bien el offset (8*8=64)
         sll     t3, t3, 3       #Multiplico por 8 para que me de bien el offset (8*8=64)
@@ -57,18 +70,21 @@ multiplicacion:
         mul.d   $f2, $f12, $f14   # f0 a f1 van a tener el valor de su multiplicacion o sea partialResult
         add.d   $f0, $f0, $f2
 #       firstOffset++;
-        lw      t0, 0(sp)       #meto en t0 firstOffset
+        lw      t0, 0(fp)       #meto en t0 firstOffset
         addi    t1, t0, 1       #Le sumo 1
-        sw      t1, 0(sp)       #y lo guardo
+        sw      t1, 0(fp)       #y lo guardo
 #       secondOffset += secondColumn;
-        lw      t0, 4(sp)       #cargo en t0 secondOffset
-        lw      t1, 12(sp)      #cargo en t1 secondColumn
+        lw      t0, 4(fp)       #cargo en t0 secondOffset
+        lw      t1, 12(fp)      #cargo en t1 secondColumn
         add     t3, t0, t1      #secondOffset += secondColumn
-        sw      t3, 4(sp)       #guardo el valor
+        sw      t3, 4(fp)       #guardo el valor
 
         b       unicoWhile      #termino y vuelvo al unico while
 
 retornar:
         #Y acá habría terminado
+        lw      gp, 24(sp)
+        lw      fp, 28(sp)
+        lw      ra, 32(sp)
         addu    sp, sp, 32
         j       ra              #Salto y me voy de la función retorno el $f0-$f1
