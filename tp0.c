@@ -46,7 +46,7 @@ char *getWholeLine(FILE * fp);
 /**
  * MIPS function used to multiply matrices passed on firstValues and secondValues
  */
-extern double multiplyMatrices(int firstOffset, int secondOffset, int secondRow, int secondColumn, double * firstValues, double * secondValues);
+extern void multiplyMatrices(int secondRow, int secondColumn, double * firstValues, double * secondValues, double * multipliedMatrix, int firstRow, int firstColumn);
 
 int main(int argc, char *argv[]) {
 
@@ -99,38 +99,30 @@ int main(int argc, char *argv[]) {
 					free( firstValues );
 					return ERROR_NOT_MATCHING_ROWCOL;
 				}
+				
+				//Creo aca la matriz con todos los resultados
+				double *multipliedMatrix = malloc( firstRow * secondColumn * sizeof(double) );
 
-					//multiply matrices
-				int f = 0;
-				int s = 0;
-				int totCol = 0;
-				int totRow = 0;
-				double partialResult = 0.0f;
+				//multiply matrices
+				multiplyMatrices(secondRow, secondColumn, firstValues, secondValues, multipliedMatrix, firstRow, firstColumn);
 
 				if ( printf("%dx%d", firstRow, secondColumn) < 0 ){
 					fprintf(stderr, "Error while printing to output file.\n");
 					return -1;
 				}
-				
-				for ( totRow = 0; totRow < firstRow * firstColumn; ) {
-					for ( totCol = 0; totCol < secondColumn; ) {
-						if ( printf( " %.2f", multiplyMatrices(f, s, secondRow, secondColumn, firstValues, secondValues) ) < 0 ){
-							fprintf(stderr, "Error while printing to output file.\n");
-							return -1;	
-						}
-						partialResult = 0.0f;
-						totCol++;
-						f = totRow;
-						s = totCol;
+
+				int contadorMatriz;
+				for(contadorMatriz = 0; contadorMatriz < (firstRow * secondColumn); contadorMatriz++){
+					if( printf(" %.2f", multipliedMatrix[contadorMatriz]) < 0){
+						fprintf(stderr, "Error while printing to output file.\n");
+						return -1;						
 					}
-					totRow += firstColumn;
-					f = totRow;
-					s = 0;
 				}
 				if ( printf( "\n" ) < 0 ){
 					fprintf(stderr, "Error while printing to output file.\n");
 					return -1;
 				}
+				free( multipliedMatrix );
 				free( firstValues );
 				free( secondValues );
 			}
